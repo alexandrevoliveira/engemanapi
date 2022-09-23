@@ -1,5 +1,6 @@
 import { HashGenerator } from '@/domain/contracts/gateways'
 import { CheckUserAccountByEmail } from '@/domain/contracts/repos'
+import { ItemInUseError } from '@/domain/entities'
 import { AddAccount, setupAddAccount } from '@/domain/usecases'
 
 import { mock, MockProxy } from 'jest-mock-extended'
@@ -37,11 +38,11 @@ describe('AddAccount', () => {
     expect(hasher.generate).toHaveBeenCalledTimes(1)
   })
 
-  it('should not call HashGenerator if CheckUserAccountByEmail returns true', async () => {
+  it('should throw ItemInUseError when CheckUserAccountByEmail returns true', async () => {
     userAccountRepo.checkByEmail.mockResolvedValueOnce(true)
 
-    await sut({ email, password })
+    const promise = sut({ email, password })
 
-    expect(hasher.generate).not.toHaveBeenCalled()
+    await expect(promise).rejects.toThrow(new ItemInUseError('email'))
   })
 })
