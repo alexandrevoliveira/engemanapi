@@ -6,6 +6,6 @@ type Input = { email: string, password: string }
 export type AddAccount = (input: Input) => Promise<void>
 
 export const setupAddAccount: Setup = (userAccountRepo, hasher) => async ({ email, password }) => {
-  await userAccountRepo.checkByEmail({ email })
-  await hasher.generate({ value: password })
+  const userExists = await userAccountRepo.checkByEmail({ email })
+  if (!userExists) await hasher.generate({ value: password })
 }
