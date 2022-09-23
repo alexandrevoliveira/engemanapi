@@ -15,6 +15,7 @@ describe('AddAccount', () => {
     email = 'any_email'
     password = 'any_password'
     userAccountRepo = mock()
+    userAccountRepo.checkByEmail.mockResolvedValue(false)
     hasher = mock()
   })
 
@@ -22,17 +23,25 @@ describe('AddAccount', () => {
     sut = setupAddAccount(userAccountRepo, hasher)
   })
 
-  it('Should call CheckUserAccountByEmail with correct input', async () => {
+  it('should call CheckUserAccountByEmail with correct input', async () => {
     await sut({ email, password })
 
     expect(userAccountRepo.checkByEmail).toHaveBeenCalledWith({ email })
     expect(userAccountRepo.checkByEmail).toHaveBeenCalledTimes(1)
   })
 
-  it('Should call HashGenerator with correct input', async () => {
+  it('should call HashGenerator with correct input', async () => {
     await sut({ email, password })
 
     expect(hasher.generate).toHaveBeenCalledWith({ value: password })
     expect(hasher.generate).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not call HashGenerator if CheckUserAccountByEmail returns true', async () => {
+    userAccountRepo.checkByEmail.mockResolvedValueOnce(true)
+
+    await sut({ email, password })
+
+    expect(hasher.generate).not.toHaveBeenCalled()
   })
 })
