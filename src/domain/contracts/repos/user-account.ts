@@ -23,3 +23,11 @@ export namespace SaveFacebookAccount {
   }
   export type Output = { id: string }
 }
+
+export interface CheckUserAccountByEmail {
+  checkByEmail: (input: CheckUserAccountByEmail.Input) => Promise<void>
+}
+
+export namespace CheckUserAccountByEmail {
+  export type Input = { email: string }
+}
