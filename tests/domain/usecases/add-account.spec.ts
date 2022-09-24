@@ -41,6 +41,14 @@ describe('AddAccount', () => {
     expect(hasher.generate).toHaveBeenCalledTimes(1)
   })
 
+  it('should rethrow if HashGenerator throws', async () => {
+    hasher.generate.mockRejectedValueOnce(new Error('hash_error'))
+
+    const promise = sut({ name, email, password })
+
+    await expect(promise).rejects.toThrow(new Error('hash_error'))
+  })
+
   it('should throw ItemInUseError when CheckUserAccountByEmail returns true', async () => {
     userAccountRepo.checkByEmail.mockResolvedValueOnce(true)
 
