@@ -1,6 +1,6 @@
-import { HashGenerator } from '@/domain/contracts/gateways'
+import { HashGenerator, TokenGenerator } from '@/domain/contracts/gateways'
 import { CheckUserAccountByEmail, SaveUserAccount } from '@/domain/contracts/repos'
-import { ItemInUseError } from '@/domain/entities'
+import { AccessToken, ItemInUseError } from '@/domain/entities'
 import { AddAccount, setupAddAccount } from '@/domain/usecases'
 
 import { mock, MockProxy } from 'jest-mock-extended'
@@ -11,6 +11,7 @@ describe('AddAccount', () => {
   let password: string
   let userAccountRepo: MockProxy<CheckUserAccountByEmail & SaveUserAccount>
   let hasher: MockProxy<HashGenerator>
+  let crypto: MockProxy<TokenGenerator>
   let sut: AddAccount
 
   beforeAll(() => {
@@ -19,12 +20,19 @@ describe('AddAccount', () => {
     password = 'any_password'
     userAccountRepo = mock()
     userAccountRepo.checkByEmail.mockResolvedValue(false)
+    userAccountRepo.save.mockResolvedValue({
+      id: 'any_account_id',
+      name,
+      email,
+      is_admin: true
+    })
     hasher = mock()
     hasher.generate.mockResolvedValue('hashed_password')
+    crypto = mock()
   })
 
   beforeEach(() => {
-    sut = setupAddAccount(userAccountRepo, hasher)
+    sut = setupAddAccount(userAccountRepo, hasher, crypto)
   })
 
   it('should call CheckUserAccountByEmail with correct input', async () => {
@@ -70,5 +78,15 @@ describe('AddAccount', () => {
     const promise = sut({ name, email, password })
 
     await expect(promise).rejects.toThrow(new Error('save_error'))
+  })
+
+  it('should call TokenGenerator with correct input', async () => {
+    await sut({ name, email, password })
+
+    expect(crypto.generate).toHaveBeenCalledWith({
+      key: 'any_account_id',
+      expirationInMs: AccessToken.expirationInMs
+    })
+    expect(crypto.generate).toHaveBeenCalledTimes(1)
   })
 })
