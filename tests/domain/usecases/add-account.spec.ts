@@ -24,11 +24,12 @@ describe('AddAccount', () => {
       id: 'any_account_id',
       name,
       email,
-      is_admin: true
+      isAdmin: true
     })
     hasher = mock()
     hasher.generate.mockResolvedValue('hashed_password')
     crypto = mock()
+    crypto.generate.mockResolvedValue('any_token')
   })
 
   beforeEach(() => {
@@ -88,5 +89,17 @@ describe('AddAccount', () => {
       expirationInMs: AccessToken.expirationInMs
     })
     expect(crypto.generate).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return an AccessToken and user info on success', async () => {
+    const addAccountOutput = await sut({ name, email, password })
+
+    expect(addAccountOutput).toEqual({
+      accessToken: 'any_token',
+      id: 'any_account_id',
+      name,
+      email,
+      isAdmin: true
+    })
   })
 })
