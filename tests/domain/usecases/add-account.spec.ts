@@ -63,4 +63,12 @@ describe('AddAccount', () => {
     expect(userAccountRepo.save).toHaveBeenCalledWith({ name, email, password: 'hashed_password' })
     expect(userAccountRepo.save).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if SaveUserAccount throws', async () => {
+    userAccountRepo.save.mockRejectedValueOnce(new Error('save_error'))
+
+    const promise = sut({ name, email, password })
+
+    await expect(promise).rejects.toThrow(new Error('save_error'))
+  })
 })
