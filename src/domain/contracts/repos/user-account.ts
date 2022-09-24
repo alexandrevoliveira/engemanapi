@@ -47,6 +47,6 @@ export namespace SaveUserAccount {
     id: string
     name: string
     email: string
-    is_admin: string
+    is_admin: boolean
   }
 }
