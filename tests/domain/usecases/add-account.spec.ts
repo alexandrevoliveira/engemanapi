@@ -91,6 +91,14 @@ describe('AddAccount', () => {
     expect(crypto.generate).toHaveBeenCalledTimes(1)
   })
 
+  it('should rethrow if TokenGenerator throws', async () => {
+    crypto.generate.mockRejectedValueOnce(new Error('token_error'))
+
+    const promise = sut({ name, email, password })
+
+    await expect(promise).rejects.toThrow(new Error('token_error'))
+  })
+
   it('should return an AccessToken and user info on success', async () => {
     const addAccountOutput = await sut({ name, email, password })
 
