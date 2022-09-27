@@ -1,4 +1,4 @@
-import { LoadUserAccount, SaveFacebookAccount } from '@/domain/contracts/repos'
+import { CheckUserAccountByEmail, LoadUserAccount, SaveFacebookAccount } from '@/domain/contracts/repos'
 import { PgRepository } from '@/infra/repos/postgres'
 import { PgUser } from '@/infra/repos/postgres/entities'
 
@@ -25,5 +25,11 @@ export class PgUserAccountRepository extends PgRepository implements LoadUserAcc
       await pgUserRepo.update({ id: parseInt(id) }, { name, facebookId })
     }
     return { id: resultId }
+  }
+
+  async checkByEmail ({ email }: CheckUserAccountByEmail.Input): Promise<CheckUserAccountByEmail.Output> {
+    const pgUserRepo = this.getRepository(PgUser)
+    const pgUser = await pgUserRepo.findOne({ email })
+    return pgUser !== null
   }
 }
