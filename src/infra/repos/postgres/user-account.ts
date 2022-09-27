@@ -2,7 +2,7 @@ import { CheckUserAccountByEmail, LoadUserAccount, SaveFacebookAccount } from '@
 import { PgRepository } from '@/infra/repos/postgres'
 import { PgUser } from '@/infra/repos/postgres/entities'
 
-export class PgUserAccountRepository extends PgRepository implements LoadUserAccount, SaveFacebookAccount {
+export class PgUserAccountRepository extends PgRepository implements LoadUserAccount, SaveFacebookAccount, CheckUserAccountByEmail {
   async load ({ email }: LoadUserAccount.Input): Promise<LoadUserAccount.Output> {
     const pgUserRepo = this.getRepository(PgUser)
     const pgUser = await pgUserRepo.findOne({ email })
