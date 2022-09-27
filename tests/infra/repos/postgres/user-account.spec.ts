@@ -85,4 +85,14 @@ describe('PgUserAccountRepository', () => {
       expect(id).toBe('1')
     })
   })
+
+  describe('checkByEmail', () => {
+    it('should return true if email exists', async () => {
+      await pgUserRepo.save({ email: 'any_email' })
+
+      const account = await sut.checkByEmail({ email: 'any_email' })
+
+      expect(account).toBe(true)
+    })
+  })
 })
