@@ -30,6 +30,6 @@ export class PgUserAccountRepository extends PgRepository implements LoadUserAcc
   async checkByEmail ({ email }: CheckUserAccountByEmail.Input): Promise<CheckUserAccountByEmail.Output> {
     const pgUserRepo = this.getRepository(PgUser)
     const pgUser = await pgUserRepo.findOne({ email })
-    return pgUser !== null
+    return pgUser !== undefined
   }
 }
