@@ -1,5 +1,5 @@
 import { HashGenerator, TokenGenerator } from '@/domain/contracts/gateways'
-import { CheckUserAccountByEmail, SaveUserAccount } from '@/domain/contracts/repos'
+import { AddUserAccount, CheckUserAccountByEmail } from '@/domain/contracts/repos'
 import { AccessToken, ItemInUseError } from '@/domain/entities'
 import { AddAccount, setupAddAccount } from '@/domain/usecases'
 
@@ -9,7 +9,7 @@ describe('AddAccount', () => {
   let name: string
   let email: string
   let password: string
-  let userAccountRepo: MockProxy<CheckUserAccountByEmail & SaveUserAccount>
+  let userAccountRepo: MockProxy<CheckUserAccountByEmail & AddUserAccount>
   let hasher: MockProxy<HashGenerator>
   let crypto: MockProxy<TokenGenerator>
   let sut: AddAccount
@@ -20,7 +20,7 @@ describe('AddAccount', () => {
     password = 'any_password'
     userAccountRepo = mock()
     userAccountRepo.checkByEmail.mockResolvedValue(false)
-    userAccountRepo.save.mockResolvedValue({
+    userAccountRepo.add.mockResolvedValue({
       id: 'any_account_id',
       name,
       email,
@@ -66,19 +66,19 @@ describe('AddAccount', () => {
     await expect(promise).rejects.toThrow(new ItemInUseError('email'))
   })
 
-  it('should call SaveUserAccount with correct input', async () => {
+  it('should call AddUserAccount with correct input', async () => {
     await sut({ name, email, password })
 
-    expect(userAccountRepo.save).toHaveBeenCalledWith({ name, email, password: 'hashed_password' })
-    expect(userAccountRepo.save).toHaveBeenCalledTimes(1)
+    expect(userAccountRepo.add).toHaveBeenCalledWith({ name, email, password: 'hashed_password' })
+    expect(userAccountRepo.add).toHaveBeenCalledTimes(1)
   })
 
-  it('should rethrow if SaveUserAccount throws', async () => {
-    userAccountRepo.save.mockRejectedValueOnce(new Error('save_error'))
+  it('should rethrow if AddUserAccount throws', async () => {
+    userAccountRepo.add.mockRejectedValueOnce(new Error('add_error'))
 
     const promise = sut({ name, email, password })
 
-    await expect(promise).rejects.toThrow(new Error('save_error'))
+    await expect(promise).rejects.toThrow(new Error('add_error'))
   })
 
   it('should call TokenGenerator with correct input', async () => {

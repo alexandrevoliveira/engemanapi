@@ -102,9 +102,9 @@ describe('PgUserAccountRepository', () => {
     })
   })
 
-  describe('save', () => {
+  describe('add', () => {
     it('should create an account', async () => {
-      const { id, name, email, isAdmin } = await sut.save({
+      const { id, name, email, isAdmin } = await sut.add({
         name: 'any_name',
         email: 'any_email',
         password: 'any_hashed_password'

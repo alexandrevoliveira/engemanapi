@@ -33,11 +33,11 @@ export namespace CheckUserAccountByEmail {
   export type Output = boolean
 }
 
-export interface SaveUserAccount {
-  save: (input: SaveUserAccount.Input) => Promise<SaveUserAccount.Output>
+export interface AddUserAccount {
+  add: (input: AddUserAccount.Input) => Promise<AddUserAccount.Output>
 }
 
-export namespace SaveUserAccount {
+export namespace AddUserAccount {
   export type Input = {
     name: string
     email: string
