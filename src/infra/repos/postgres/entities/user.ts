@@ -1,22 +1,28 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 
-@Entity({ name: 'usuarios' })
+@Entity({ name: 'users' })
 export class PgUser {
   @PrimaryGeneratedColumn()
     id!: number
 
-  @Column({ name: 'nome', nullable: true })
+  @Column({ nullable: true })
     name?: string
 
   @Column()
     email!: string
 
-  @Column({ name: 'id_facebook', nullable: true })
+  @Column({ nullable: true })
+    password?: string
+
+  @Column({ name: 'is_admin', default: false })
+    isAdmin!: string
+
+  @Column({ name: 'facebook_id', nullable: true })
     facebookId?: string
 
-  @Column({ name: 'foto', nullable: true })
+  @Column({ name: 'picture_url', nullable: true })
     pictureUrl?: string
 
-  @Column({ name: 'iniciais', nullable: true })
+  @Column({ nullable: true })
     initials?: string
 }
