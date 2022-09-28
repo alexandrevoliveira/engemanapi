@@ -101,4 +101,21 @@ describe('PgUserAccountRepository', () => {
       expect(account).toBe(false)
     })
   })
+
+  describe('save', () => {
+    it('should create an account', async () => {
+      const { id, name, email, isAdmin } = await sut.save({
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_hashed_password'
+      })
+      const pgUser = await pgUserRepo.findOne({ email: 'any_email' })
+
+      expect(pgUser?.id).toBe(1)
+      expect(id).toBe('1')
+      expect(name).toBe('any_name')
+      expect(email).toBe('any_email')
+      expect(isAdmin).toBe(false)
+    })
+  })
 })
