@@ -9,4 +9,12 @@ describe('Compare', () => {
 
     expect(error).toEqual(new CompareFieldError())
   })
+
+  it('should return undefined if validation succeeds', () => {
+    const sut = new Compare('any_value', 'any_value')
+
+    const validation = sut.validate()
+
+    expect(validation).toBeUndefined()
+  })
 })
