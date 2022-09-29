@@ -3,11 +3,11 @@ import { Compare } from '@/application/validation'
 
 describe('Compare', () => {
   it('should return CompareFieldError if validation fails', () => {
-    const sut = new Compare('any_value', 'any_other_value')
+    const sut = new Compare('any_value', 'any_other_value', 'any_field')
 
     const error = sut.validate()
 
-    expect(error).toEqual(new CompareFieldError())
+    expect(error).toEqual(new CompareFieldError('any_field'))
   })
 
   it('should return undefined if validation succeeds', () => {

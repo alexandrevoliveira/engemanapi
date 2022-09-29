@@ -23,8 +23,11 @@ export class MaxFileSizeError extends Error {
 }
 
 export class CompareFieldError extends Error {
-  constructor () {
-    super('Values passed are not the same. Try again.')
+  constructor (fieldToCompareName?: string) {
+    const message = fieldToCompareName === undefined
+      ? 'Values passed are not the same. Try again.'
+      : `Invalid ${fieldToCompareName}. Try again`
+    super(message)
     this.name = 'CompareFieldError'
   }
 }
