@@ -1,4 +1,4 @@
-import { AllowedMimeTypes, MaxFileSize, Required, RequiredBuffer, RequiredString, ValidationBuilder } from '@/application/validation'
+import { AllowedMimeTypes, Compare, MaxFileSize, Required, RequiredBuffer, RequiredString, ValidationBuilder } from '@/application/validation'
 
 describe('ValidationBuilder', () => {
   it('should return RequiredString', () => {
@@ -76,5 +76,14 @@ describe('ValidationBuilder', () => {
       new AllowedMimeTypes(['png'], 'image/png'),
       new MaxFileSize(6, buffer)
     ])
+  })
+
+  it('should return Compare', () => {
+    const validators = ValidationBuilder
+      .of({ value: { password: 'any_password' } })
+      .compare({ valueToCompare: { passwordConfirmation: 'any_password' }, valueToCompareName: 'passwordConfirmation' })
+      .build()
+
+    expect(validators).toEqual([new Compare<object>({ password: 'any_password' }, { passwordConfirmation: 'any_password' }, 'passwordConfirmation')])
   })
 })
