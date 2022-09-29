@@ -1,4 +1,4 @@
-import { AllowedMimeTypes, Extension, MaxFileSize, Required, RequiredBuffer, RequiredString, Validator } from '@/application/validation'
+import { AllowedMimeTypes, Compare, Extension, MaxFileSize, Required, RequiredBuffer, RequiredString, Validator } from '@/application/validation'
 
 export class ValidationBuilder {
   private constructor (
@@ -32,6 +32,11 @@ export class ValidationBuilder {
     if (this.value.buffer !== undefined) {
       this.validators.push(new MaxFileSize(maxSizeInMb, this.value.buffer))
     }
+    return this
+  }
+
+  compare ({ valueToCompare, valueToCompareName }: { valueToCompare: any, valueToCompareName?: string }): ValidationBuilder {
+    this.validators.push(new Compare(this.value, valueToCompare, valueToCompareName))
     return this
   }
 
