@@ -21,3 +21,10 @@ export class MaxFileSizeError extends Error {
     this.name = 'MaxFileSizeError'
   }
 }
+
+export class CompareFieldError extends Error {
+  constructor () {
+    super('Values passed are not the same. Try again.')
+    this.name = 'CompareFieldError'
+  }
+}
