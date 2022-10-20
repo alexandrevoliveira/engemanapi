@@ -31,3 +31,10 @@ export class CompareFieldError extends Error {
     this.name = 'CompareFieldError'
   }
 }
+
+export class EmailInvalidError extends Error {
+  constructor () {
+    super('The received email is invalid. Try again')
+    this.name = 'EmailInvalidError'
+  }
+}
