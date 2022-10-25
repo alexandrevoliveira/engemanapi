@@ -1,4 +1,4 @@
-import { AllowedMimeTypes, Compare, MaxFileSize, Required, RequiredBuffer, RequiredString, ValidationBuilder } from '@/application/validation'
+import { AllowedMimeTypes, Compare, Email, MaxFileSize, Required, RequiredBuffer, RequiredString, ValidationBuilder } from '@/application/validation'
 
 describe('ValidationBuilder', () => {
   it('should return RequiredString', () => {
@@ -86,4 +86,13 @@ describe('ValidationBuilder', () => {
 
     expect(validators).toEqual([new Compare<object>({ password: 'any_password' }, { passwordConfirmation: 'any_password' }, 'passwordConfirmation')])
   })
+})
+
+it('should return Email', () => {
+  const validators = ValidationBuilder
+    .of({ value: { email: 'any_email' } })
+    .email()
+    .build()
+
+  expect(validators).toEqual([new Email('any_email')])
 })
