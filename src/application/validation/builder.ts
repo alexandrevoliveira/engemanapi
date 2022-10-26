@@ -41,7 +41,10 @@ export class ValidationBuilder {
   }
 
   email (): ValidationBuilder {
-    if (this.value.email !== undefined) {
+    if (this.value !== undefined && typeof this.value === 'string') {
+      this.validators.push(new Email(this.value))
+    }
+    if (this.value.email !== undefined && typeof this.value.email === 'string') {
       this.validators.push(new Email(this.value.email))
     }
     return this
