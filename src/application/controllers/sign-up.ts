@@ -1,7 +1,7 @@
 import { Controller } from '@/application/controllers'
-import { HttpResponse } from '@/application/helpers'
-import { AddAccount } from '@/domain/usecases'
+import { HttpResponse, ok } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
+import { AddAccount } from '@/domain/usecases'
 
 type HttpRequest = { name: string, email: string, password: string, passwordConfirmation: string }
 
@@ -11,11 +11,8 @@ export class SignUpController extends Controller {
   }
 
   async perform ({ name, email, password }: HttpRequest): Promise<HttpResponse<any>> {
-    await this.addAccount({ name, email, password })
-    return {
-      statusCode: 400,
-      data: 'any_data'
-    }
+    const addAccountOutput = await this.addAccount({ name, email, password })
+    return ok(addAccountOutput)
   }
 
   override buildValidators ({ name, email, password, passwordConfirmation }: HttpRequest): Validator[] {
