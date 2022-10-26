@@ -96,3 +96,13 @@ it('should return Email', () => {
 
   expect(validators).toEqual([new Email('any_email')])
 })
+
+it('should return Email and RequiredString', () => {
+  const validators = ValidationBuilder
+    .of({ value: 'any_email' })
+    .email()
+    .required()
+    .build()
+
+  expect(validators).toEqual([new Email('any_email'), new RequiredString('any_email')])
+})
