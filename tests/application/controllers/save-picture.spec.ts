@@ -21,7 +21,7 @@ describe('SavePictureController', () => {
     sut = new SavePictureController(changeProfilePicture)
   })
 
-  it('should extend Controller', async () => {
+  it('should extend Controller', () => {
     expect(sut).toBeInstanceOf(Controller)
   })
 

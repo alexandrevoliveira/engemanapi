@@ -18,7 +18,7 @@ describe('FacebookLoginController', () => {
     sut = new FacebookLoginController(facebookAuth)
   })
 
-  it('should extend Controller', async () => {
+  it('should extend Controller', () => {
     expect(sut).toBeInstanceOf(Controller)
   })
 

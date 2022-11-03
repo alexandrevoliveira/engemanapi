@@ -19,7 +19,7 @@ describe('DbTransactionController', () => {
     sut = new DbTransactionController(decoratee, db)
   })
 
-  it('should extend Controller', async () => {
+  it('should extend Controller', () => {
     expect(sut).toBeInstanceOf(Controller)
   })
 

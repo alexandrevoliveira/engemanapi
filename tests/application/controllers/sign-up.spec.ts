@@ -27,15 +27,8 @@ describe('SignUpController', () => {
     sut = new SignUpController(addAccount)
   })
 
-  it('should extend Controller', async () => {
+  it('should extend Controller', () => {
     expect(sut).toBeInstanceOf(Controller)
-  })
-
-  it('should call AddAccount with correct input', async () => {
-    await sut.perform({ name, email, password, passwordConfirmation })
-
-    expect(addAccount).toHaveBeenCalledWith({ name, email, password })
-    expect(addAccount).toHaveBeenCalledTimes(1)
   })
 
   it('should build validators correctly', async () => {
@@ -49,6 +42,13 @@ describe('SignUpController', () => {
       new Compare('any_password', 'any_password', 'passwordConfirmation'),
       new RequiredString('any_password', 'passwordConfirmation')
     ])
+  })
+
+  it('should call AddAccount with correct input', async () => {
+    await sut.perform({ name, email, password, passwordConfirmation })
+
+    expect(addAccount).toHaveBeenCalledWith({ name, email, password })
+    expect(addAccount).toHaveBeenCalledTimes(1)
   })
 
   it('should return 200 with valid data', async () => {

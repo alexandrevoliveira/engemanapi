@@ -9,12 +9,9 @@ export type AddAccount = (input: Input) => Promise<Output>
 
 export const setupAddAccount: Setup = (userAccountRepo, hasher, crypto) => async ({ name, email, password }) => {
   const userExists = await userAccountRepo.checkByEmail({ email })
-  if (!userExists) {
-    const hashedPassword = await hasher.generate({ value: password })
-    const userAccount = await userAccountRepo.add({ name, email, password: hashedPassword })
-    const accessToken = await crypto.generate({ key: userAccount.id, expirationInMs: AccessToken.expirationInMs })
-    return { accessToken, ...userAccount }
-  } else {
-    throw new ItemInUseError('email')
-  }
+  if (userExists) throw new ItemInUseError('email')
+  const hashedPassword = await hasher.generate({ value: password })
+  const userAccount = await userAccountRepo.add({ name, email, password: hashedPassword })
+  const accessToken = await crypto.generate({ key: userAccount.id, expirationInMs: AccessToken.expirationInMs })
+  return { accessToken, ...userAccount }
 }
