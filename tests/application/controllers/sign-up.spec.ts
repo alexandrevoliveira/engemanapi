@@ -1,5 +1,6 @@
 import { Controller, SignUpController } from '@/application/controllers'
 import { Compare, Email, RequiredString } from '@/application/validation'
+import { ItemInUseError } from '@/domain/entities'
 
 describe('SignUpController', () => {
   let name: string
@@ -49,6 +50,18 @@ describe('SignUpController', () => {
 
     expect(addAccount).toHaveBeenCalledWith({ name, email, password })
     expect(addAccount).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return 400 if signup fails when email is already in use', async () => {
+    const error = new ItemInUseError('email')
+    addAccount.mockRejectedValueOnce(error)
+
+    const httpResponse = await sut.perform({ name, email, password, passwordConfirmation })
+
+    expect(httpResponse).toEqual({
+      statusCode: 400,
+      data: error
+    })
   })
 
   it('should return 200 with valid data', async () => {
