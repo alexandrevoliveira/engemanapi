@@ -1,18 +1,25 @@
 import { Controller } from '@/application/controllers'
-import { HttpResponse, ok } from '@/application/helpers'
+import { badRequest, HttpResponse, ok } from '@/application/helpers'
 import { ValidationBuilder as Builder, Validator } from '@/application/validation'
+import { ItemInUseError } from '@/domain/entities'
 import { AddAccount } from '@/domain/usecases'
 
 type HttpRequest = { name: string, email: string, password: string, passwordConfirmation: string }
+type Model = Error | { accessToken: string, id: string, name: string, email: string, isAdmin: boolean }
 
 export class SignUpController extends Controller {
   constructor (private readonly addAccount: AddAccount) {
     super()
   }
 
-  async perform ({ name, email, password }: HttpRequest): Promise<HttpResponse<any>> {
-    const addAccountOutput = await this.addAccount({ name, email, password })
-    return ok(addAccountOutput)
+  async perform ({ name, email, password }: HttpRequest): Promise<HttpResponse<Model>> {
+    try {
+      const addAccountOutput = await this.addAccount({ name, email, password })
+      return ok(addAccountOutput)
+    } catch (error) {
+      if (error instanceof ItemInUseError) return badRequest(error)
+      throw error
+    }
   }
 
   override buildValidators ({ name, email, password, passwordConfirmation }: HttpRequest): Validator[] {
