@@ -64,6 +64,15 @@ describe('SignUpController', () => {
     })
   })
 
+  it('should rethrow if addAccount throws', async () => {
+    const error = new Error('addAccount_error')
+    addAccount.mockRejectedValueOnce(error)
+
+    const httpResponse = sut.perform({ name, email, password, passwordConfirmation })
+
+    await expect(httpResponse).rejects.toThrow(error)
+  })
+
   it('should return 200 with valid data', async () => {
     const httpResponse = await sut.perform({ name, email, password, passwordConfirmation })
 
