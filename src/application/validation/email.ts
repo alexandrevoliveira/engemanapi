@@ -15,8 +15,6 @@ export class Email implements Validator {
     // n? ==> optional usage
     // n* ==> 0 or more occurrences of n
     // {2,3} ==> 2 or 3 items
-    if (this.email !== '' && !emailRegex.test(this.email)) {
-      return new InvalidEmailError()
-    }
+    return (this.email !== '' && !emailRegex.test(this.email)) ? new InvalidEmailError() : undefined
   }
 }
