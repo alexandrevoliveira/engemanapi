@@ -32,9 +32,9 @@ export class CompareFieldError extends Error {
   }
 }
 
-export class EmailInvalidError extends Error {
+export class InvalidEmailError extends Error {
   constructor () {
     super('The received email is invalid. Try again')
-    this.name = 'EmailInvalidError'
+    this.name = 'InvalidEmailError'
   }
 }
