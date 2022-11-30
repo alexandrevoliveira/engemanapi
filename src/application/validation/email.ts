@@ -5,7 +5,7 @@ export class Email implements Validator {
   constructor (private readonly email: string) {}
 
   validate (): Error | undefined {
-    const mailFormat = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+    const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
     // RegExp
     // ^ ==> should start with something
     // $ ==> should end with it
@@ -15,7 +15,7 @@ export class Email implements Validator {
     // n? ==> optional usage
     // n* ==> 0 or more occurrences of n
     // {2,3} ==> 2 or 3 items
-    if (this.email.match(mailFormat) === null) {
+    if (this.email !== '' && !emailRegex.test(this.email)) {
       return new InvalidEmailError()
     }
   }
