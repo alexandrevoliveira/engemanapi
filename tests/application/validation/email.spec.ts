@@ -17,4 +17,12 @@ describe('Email', () => {
 
     expect(error).toBeUndefined()
   })
+
+  it('should return undefined if validation succeeds when email is empty', () => {
+    const sut = new Email('')
+
+    const error = sut.validate()
+
+    expect(error).toBeUndefined()
+  })
 })
