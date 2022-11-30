@@ -28,7 +28,7 @@ export class SignUpController extends Controller {
       ...Builder.of({ value: email, fieldName: 'email' }).required().email().build(),
       ...Builder.of({ value: password, fieldName: 'password' })
         .required()
-        .compare({ valueToCompare: passwordConfirmation, valueToCompareName: 'passwordConfirmation' })
+        .compare({ valueToCompare: passwordConfirmation, fieldToCompareName: 'passwordConfirmation' })
         .build(),
       ...Builder.of({ value: passwordConfirmation, fieldName: 'passwordConfirmation' }).required().build()
     ]

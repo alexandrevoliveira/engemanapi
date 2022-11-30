@@ -1,4 +1,5 @@
 import { Controller, SignUpController } from '@/application/controllers'
+import { ServerError } from '@/application/errors'
 import { Compare, Email, RequiredString } from '@/application/validation'
 import { ItemInUseError } from '@/domain/entities'
 
@@ -12,7 +13,7 @@ describe('SignUpController', () => {
 
   beforeAll(() => {
     name = 'any_name'
-    email = 'any_email'
+    email = 'any_email@gmail.com'
     password = 'any_password'
     passwordConfirmation = 'any_password'
     addAccount = jest.fn().mockResolvedValue({
@@ -37,8 +38,8 @@ describe('SignUpController', () => {
 
     expect(validators).toEqual([
       new RequiredString('any_name', 'name'),
-      new RequiredString('any_email', 'email'),
-      new Email('any_email'),
+      new RequiredString('any_email@gmail.com', 'email'),
+      new Email('any_email@gmail.com'),
       new RequiredString('any_password', 'password'),
       new Compare('any_password', 'any_password', 'passwordConfirmation'),
       new RequiredString('any_password', 'passwordConfirmation')
@@ -46,7 +47,7 @@ describe('SignUpController', () => {
   })
 
   it('should call AddAccount with correct input', async () => {
-    await sut.perform({ name, email, password, passwordConfirmation })
+    await sut.handle({ name, email, password, passwordConfirmation })
 
     expect(addAccount).toHaveBeenCalledWith({ name, email, password })
     expect(addAccount).toHaveBeenCalledTimes(1)
@@ -56,7 +57,7 @@ describe('SignUpController', () => {
     const error = new ItemInUseError('email')
     addAccount.mockRejectedValueOnce(error)
 
-    const httpResponse = await sut.perform({ name, email, password, passwordConfirmation })
+    const httpResponse = await sut.handle({ name, email, password, passwordConfirmation })
 
     expect(httpResponse).toEqual({
       statusCode: 400,
@@ -64,17 +65,20 @@ describe('SignUpController', () => {
     })
   })
 
-  it('should rethrow if addAccount throws', async () => {
-    const error = new Error('addAccount_error')
+  it('should return 500 on infra error', async () => {
+    const error = new Error('infra_error')
     addAccount.mockRejectedValueOnce(error)
 
-    const httpResponse = sut.perform({ name, email, password, passwordConfirmation })
+    const httpResponse = await sut.handle({ name, email, password, passwordConfirmation })
 
-    await expect(httpResponse).rejects.toThrow(error)
+    expect(httpResponse).toEqual({
+      statusCode: 500,
+      data: new ServerError(error)
+    })
   })
 
   it('should return 200 with valid data', async () => {
-    const httpResponse = await sut.perform({ name, email, password, passwordConfirmation })
+    const httpResponse = await sut.handle({ name, email, password, passwordConfirmation })
 
     expect(httpResponse).toEqual({
       statusCode: 200,
@@ -82,7 +86,7 @@ describe('SignUpController', () => {
         accessToken: 'any_token',
         id: 'any_id',
         name: 'any_name',
-        email: 'any_email',
+        email: 'any_email@gmail.com',
         isAdmin: false
       }
     })

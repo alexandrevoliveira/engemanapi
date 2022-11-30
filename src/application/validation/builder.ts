@@ -30,21 +30,21 @@ export class ValidationBuilder {
       this.validators.push(new AllowedMimeTypes(allowed, this.value.mimeType))
     }
     if (this.value.buffer !== undefined) {
-      this.validators.push(new MaxFileSize(maxSizeInMb, this.value.buffer))
+      this.validators.push(new MaxFileSize(this.value.buffer, maxSizeInMb))
     }
     return this
   }
 
-  compare ({ valueToCompare, valueToCompareName }: { valueToCompare: any, valueToCompareName?: string }): ValidationBuilder {
-    this.validators.push(new Compare(this.value, valueToCompare, valueToCompareName))
+  compare ({ valueToCompare, fieldToCompareName }: { valueToCompare: any, fieldToCompareName?: string }): ValidationBuilder {
+    this.validators.push(new Compare(this.value, valueToCompare, fieldToCompareName))
     return this
   }
 
   email (): ValidationBuilder {
-    if (this.value !== undefined && typeof this.value === 'string') {
+    if (typeof this.value === 'string') {
       this.validators.push(new Email(this.value))
     }
-    if (this.value.email !== undefined && typeof this.value.email === 'string') {
+    if (typeof this.value.email === 'string') {
       this.validators.push(new Email(this.value.email))
     }
     return this

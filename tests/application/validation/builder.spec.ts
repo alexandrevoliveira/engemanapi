@@ -52,7 +52,7 @@ describe('ValidationBuilder', () => {
       .image({ allowed: ['png'], maxSizeInMb: 6 })
       .build()
 
-    expect(validators).toEqual([new MaxFileSize(6, buffer)])
+    expect(validators).toEqual([new MaxFileSize(buffer, 6)])
   })
 
   it('should return correct image validators', () => {
@@ -74,14 +74,14 @@ describe('ValidationBuilder', () => {
 
     expect(validators).toEqual([
       new AllowedMimeTypes(['png'], 'image/png'),
-      new MaxFileSize(6, buffer)
+      new MaxFileSize(buffer, 6)
     ])
   })
 
   it('should return Compare', () => {
     const validators = ValidationBuilder
       .of({ value: { password: 'any_password' } })
-      .compare({ valueToCompare: { passwordConfirmation: 'any_password' }, valueToCompareName: 'passwordConfirmation' })
+      .compare({ valueToCompare: { passwordConfirmation: 'any_password' }, fieldToCompareName: 'passwordConfirmation' })
       .build()
 
     expect(validators).toEqual([new Compare<object>({ password: 'any_password' }, { passwordConfirmation: 'any_password' }, 'passwordConfirmation')])
@@ -97,12 +97,12 @@ it('should return Email', () => {
   expect(validators).toEqual([new Email('any_email')])
 })
 
-it('should return Email and RequiredString', () => {
+it('should return RequiredString and Email', () => {
   const validators = ValidationBuilder
     .of({ value: 'any_email' })
-    .email()
     .required()
+    .email()
     .build()
 
-  expect(validators).toEqual([new Email('any_email'), new RequiredString('any_email')])
+  expect(validators).toEqual([new RequiredString('any_email'), new Email('any_email')])
 })

@@ -2,8 +2,8 @@ import { MaxFileSizeError } from '@/application/errors'
 
 export class MaxFileSize {
   constructor (
-    private readonly maxSizeInMb: number,
-    private readonly value: Buffer
+    private readonly value: Buffer,
+    private readonly maxSizeInMb: number
   ) {}
 
   validate (): Error | undefined {
