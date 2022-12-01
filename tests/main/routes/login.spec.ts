@@ -1,23 +1,28 @@
 import { CompareFieldError, InvalidEmailError, UnauthorizedError } from '@/application/errors'
 import { PgUser } from '@/infra/repos/postgres/entities'
+import { PgConnection } from '@/infra/repos/postgres/helpers'
 import { app } from '@/main/config/app'
 import { makeFakeDb } from '@/tests/infra/repos/postgres/mocks'
 
 import { IBackup } from 'pg-mem'
-import { getConnection } from 'typeorm'
+import { Repository } from 'typeorm'
 import request from 'supertest'
+import { ItemInUseError } from '@/domain/entities'
 
 describe('Login Routes', () => {
   let backup: IBackup
-  const loadUserSpy = jest.fn()
+  let connection: PgConnection
+  let pgUserRepo: Repository<PgUser>
 
   beforeAll(async () => {
+    connection = PgConnection.getInstance()
     const db = await makeFakeDb([PgUser])
     backup = db.backup()
+    pgUserRepo = connection.getRepository(PgUser)
   })
 
   afterAll(async () => {
-    await getConnection().close()
+    await connection.disconnect()
   })
 
   beforeEach(() => {
@@ -25,6 +30,7 @@ describe('Login Routes', () => {
   })
 
   describe('POST /login/facebook', () => {
+    const loadUserSpy = jest.fn()
     jest.mock('@/infra/gateways/facebook-api', () => ({
       FacebookApi: jest.fn().mockReturnValue({ loadUser: loadUserSpy })
     }))
@@ -95,6 +101,22 @@ describe('Login Routes', () => {
 
       expect(status).toBe(400)
       expect(body.error).toBe(new InvalidEmailError().message)
+    })
+
+    it('should return 400 with ItemInUseError', async () => {
+      await pgUserRepo.save({ name: 'any_name', email: 'any_email@mail.com' })
+
+      const { status, body } = await request(app)
+        .post('/api/signup')
+        .send({
+          name: 'any_name',
+          email: 'any_email@mail.com',
+          password: '12345',
+          passwordConfirmation: '12345'
+        })
+
+      expect(status).toBe(400)
+      expect(body.error).toBe(new ItemInUseError('email').message)
     })
   })
 })
