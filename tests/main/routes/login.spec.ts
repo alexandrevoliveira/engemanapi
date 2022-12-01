@@ -1,4 +1,4 @@
-import { UnauthorizedError } from '@/application/errors'
+import { CompareFieldError, UnauthorizedError } from '@/application/errors'
 import { PgUser } from '@/infra/repos/postgres/entities'
 import { app } from '@/main/config/app'
 import { makeFakeDb } from '@/tests/infra/repos/postgres/mocks'
@@ -67,6 +67,20 @@ describe('Login Routes', () => {
       expect(body.name).toBe('any_name')
       expect(body.email).toBe('any_email@mail.com')
       expect(body.isAdmin).toBeFalsy()
+    })
+
+    it('should return 400 with CompareFieldError', async () => {
+      const { status, body } = await request(app)
+        .post('/api/signup')
+        .send({
+          name: 'any_name',
+          email: 'any_email@mail.com',
+          password: '12345',
+          passwordConfirmation: '12346'
+        })
+
+      expect(status).toBe(400)
+      expect(body.error).toBe(new CompareFieldError('passwordConfirmation').message)
     })
   })
 })
