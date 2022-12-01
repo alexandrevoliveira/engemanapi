@@ -1,2 +1,3 @@
 export * from './facebook-login'
 export * from './save-picture'
+export * from './sign-up'
