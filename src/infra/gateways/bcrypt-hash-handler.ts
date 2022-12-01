@@ -2,7 +2,7 @@ import { HashGenerator } from '@/domain/contracts/gateways'
 
 import bcrypt from 'bcrypt'
 
-export class BcryptAdapter implements HashGenerator {
+export class BcryptHashHandler implements HashGenerator {
   constructor (private readonly salt: number) {}
 
   async generate ({ value }: HashGenerator.Input): Promise<HashGenerator.Output> {

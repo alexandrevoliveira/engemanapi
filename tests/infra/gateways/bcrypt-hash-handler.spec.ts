@@ -1,14 +1,14 @@
-import { BcryptAdapter } from '@/infra/gateways'
+import { BcryptHashHandler } from '@/infra/gateways'
 
 import bcrypt from 'bcrypt'
 
 jest.mock('bcrypt')
 
-describe('BcryptAdapter', () => {
+describe('BcryptHashHandler', () => {
   let value: string
   let salt: number
   let fakeBcrypt: jest.Mocked<typeof bcrypt>
-  let sut: BcryptAdapter
+  let sut: BcryptHashHandler
 
   beforeAll(() => {
     value = 'any_value'
@@ -18,7 +18,7 @@ describe('BcryptAdapter', () => {
   })
 
   beforeEach(() => {
-    sut = new BcryptAdapter(salt)
+    sut = new BcryptHashHandler(salt)
   })
 
   it('should call hash with correct input', async () => {
