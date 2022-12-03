@@ -1,6 +1,6 @@
 {
   "name": "engemanapi",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Professional API using Clean Architecture and TDD.",
   "license": "GPL-3.0-or-later",
   "keywords": [
